@@ -8,7 +8,7 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.97";
+our $VERSION = "0.97.1";
 our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
@@ -58,7 +58,7 @@ sub eend {
     my ($columns, $rows) = Term::Size::chars *STDOUT{IO};
 
     print up(1), right($columns - 7), BOLD, BLUE, "[ ", 
-        ($res ?  GREEN."OK" : RED."!!"), 
+        ($res ?  GREEN."ok" : RED."!!"), 
         BLUE, " ]", RESET, "\n";
 }
 
