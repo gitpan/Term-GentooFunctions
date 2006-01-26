@@ -8,31 +8,43 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.95";
-our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend);
+our $VERSION = "0.97";
+our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
 
+our $indent  = 0;
+our $maxdent = 10;
+
 1;
 
-sub einfo {
+sub eindent  { my $i = int shift; $i=1 unless $i>1; $indent += $i; $indent = $maxdent if $indent > $maxdent }
+sub eoutdent { my $i = int shift; $i=1 unless $i>1; $indent -= $i; $indent =        0 if $indent <        0 }
+
+sub wash {
     my $msg = shift;
        $msg =~ s/[\r\n]//sg;
+       $msg =~ s/^\s+//s;
+       $msg =~ s/\s+$//s;
+
+    return ("  " x $indent) . $msg;
+}
+
+sub einfo {
+    my $msg = &wash(shift);
 
     print " ", BOLD, GREEN, "* ", RESET, "$msg\n";
 }
 
 sub eerror {
-    my $msg = shift;
-       $msg =~ s/[\r\n]//sg;
+    my $msg = &wash(shift);
 
     print " ", BOLD, RED, "* ", RESET, "$msg\n";
 }
 
 sub ewarn {
-    my $msg = shift;
-       $msg =~ s/[\r\n]//sg;
+    my $msg = &wash(shift);
 
     print " ", BOLD, YELLOW, "* ", RESET, "$msg\n";
 }
@@ -66,6 +78,22 @@ __END__
     ebegin "I hope this works...";
      ....
     eend $truefalse; # the result is backwards of gentoo; ie, 0 is bad, 1 is good.
+
+=head2 prints
+
+einfo, ewarn, and error show informative lines
+
+=head2 begin and end
+
+ebegin and eend show the beginning and ends of things.
+
+you can also use eindent and eoutdent to show trees of things happening:
+
+einfo "something"
+eindent 
+einfo "something else" # indented
+eoutdent
+einfo "something else (again)" # un-dented
 
 =head1 AUTHOR
 
