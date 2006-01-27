@@ -8,7 +8,7 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.97.1";
+our $VERSION = "0.98";
 our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
@@ -54,12 +54,14 @@ sub ebegin {
 }
 
 sub eend {
-    my $res = shift;
+    my $res = (int @_>0 ? shift : $_);
     my ($columns, $rows) = Term::Size::chars *STDOUT{IO};
 
     print up(1), right($columns - 7), BOLD, BLUE, "[ ", 
         ($res ?  GREEN."ok" : RED."!!"), 
         BLUE, " ]", RESET, "\n";
+
+    $res;
 }
 
 __END__
@@ -79,13 +81,23 @@ __END__
      ....
     eend $truefalse; # the result is backwards of gentoo; ie, 0 is bad, 1 is good.
 
-=head2 prints
+=head1 prints
 
 einfo, ewarn, and error show informative lines
 
-=head2 begin and end
+=head1 ebegin and eend
 
 ebegin and eend show the beginning and ends of things.
+
+Additionally, eend returns the result passed in for handy returns at the bottom of functions...
+
+    sub eg {
+        eend 0; # eg now returns a false!!  Huzzah!
+    }
+
+Lastly, eend will use $_ if it is not passed any arguments.
+
+=head1 indents
 
 you can also use eindent and eoutdent to show trees of things happening:
 
