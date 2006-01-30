@@ -6,15 +6,15 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.99";
+our $VERSION = "0.99.1";
 our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
 
 BEGIN {
-    use Data::Dumper;
-    die Dumper(\%ENV) unless defined $ENV{RC_INDENTATION};
+    # use Data::Dumper;
+    # die Dumper(\%ENV) unless defined $ENV{RC_INDENTATION};
     $ENV{RC_DEFAULT_INDENT} = 2   unless defined $ENV{RC_DEFAULT_INDENT};
     $ENV{RC_INDENTATION}    = " " unless defined $ENV{RC_INDENTATION};
 }

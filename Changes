@@ -1,3 +1,6 @@
+0.99.1:  Mon Jan 30 15:44:15 EST 2006
+   - jettero removed some debugging code
+
 0.99:  Mon Jan 30 15:17:05 EST 2006
    - jettero made Term::GF understand the shell
      RC_DEFAULT_INDENT and RC_INDENTATION, however you must
