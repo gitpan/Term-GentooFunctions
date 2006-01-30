@@ -1,5 +1,3 @@
-
-
 package Term::GentooFunctions;
 
 use strict;
@@ -8,19 +6,33 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.98";
+our $VERSION = "0.99";
 our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
 
-our $indent  = 0;
-our $maxdent = 10;
+BEGIN {
+    use Data::Dumper;
+    die Dumper(\%ENV) unless defined $ENV{RC_INDENTATION};
+    $ENV{RC_DEFAULT_INDENT} = 2   unless defined $ENV{RC_DEFAULT_INDENT};
+    $ENV{RC_INDENTATION}    = " " unless defined $ENV{RC_INDENTATION};
+}
+
 
 1;
 
-sub eindent  { my $i = int shift; $i=1 unless $i>1; $indent += $i; $indent = $maxdent if $indent > $maxdent }
-sub eoutdent { my $i = int shift; $i=1 unless $i>1; $indent -= $i; $indent =        0 if $indent <        0 }
+sub eindent  {
+    my $i = shift || $ENV{RC_DEFAULT_INDENT};
+
+    $ENV{RC_INDENTATION} .= " " x $i;
+}
+
+sub eoutdent {
+    my $i = shift || $ENV{RC_DEFAULT_INDENT};
+
+    $ENV{RC_INDENTATION} =~ s/(?<= ) $// for 1 .. $i;
+}
 
 sub wash {
     my $msg = shift;
@@ -28,25 +40,25 @@ sub wash {
        $msg =~ s/^\s+//s;
        $msg =~ s/\s+$//s;
 
-    return ("  " x $indent) . $msg;
+    return "$ENV{RC_INDENTATION}$msg";
 }
 
 sub einfo {
     my $msg = &wash(shift);
 
-    print " ", BOLD, GREEN, "* ", RESET, "$msg\n";
+    print " ", BOLD, GREEN, "*", RESET, "$msg\n";
 }
 
 sub eerror {
     my $msg = &wash(shift);
 
-    print " ", BOLD, RED, "* ", RESET, "$msg\n";
+    print " ", BOLD, RED, "*", RESET, "$msg\n";
 }
 
 sub ewarn {
     my $msg = &wash(shift);
 
-    print " ", BOLD, YELLOW, "* ", RESET, "$msg\n";
+    print " ", BOLD, YELLOW, "*", RESET, "$msg\n";
 }
 
 sub ebegin {
@@ -54,7 +66,7 @@ sub ebegin {
 }
 
 sub eend {
-    my $res = (int @_>0 ? shift : $_);
+    my $res = (@_>0 ? shift : $_);
     my ($columns, $rows) = Term::Size::chars *STDOUT{IO};
 
     print up(1), right($columns - 7), BOLD, BLUE, "[ ", 
@@ -106,6 +118,16 @@ eindent
 einfo "something else" # indented
 eoutdent
 einfo "something else (again)" # un-dented
+
+=head1 bash
+
+BTW, Term::GentooFunctions will use RC_INDENTATION and RC_DEFAULT_INDENT from /sbin/functions.sh...  So you can eindent in a
+bash_script.sh and your perl_script.pl will use the indent level!  However, to get it to work you must 
+
+    export RC_INDENTATION RC_DEFAULT_INDENT 
+    
+before you fork to perl.  Also, T::GF won't be able to modify the indent level in a way that will propagate back up to bash
+(obviously).
 
 =head1 AUTHOR
 
