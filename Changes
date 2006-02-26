@@ -1,3 +1,18 @@
+1.01:  Sun Feb 26 07:56:47 EST 2006
+   - jettero fixed several compile time bugs
+
+1:  Tue Feb 14 17:54:19 EST 2006
+   - jettero added a $|=1 to einfon ... cuz c'mon
+
+0.99.3:  Mon Feb  6 18:24:10 EST 2006
+   - jettero have added einfon
+   - jettero fixed a wrong subtraction on [ ok ] placement
+     ... how did I miss that before?
+
+0.99.2:  Mon Jan 30 15:51:09 EST 2006
+   - jettero found yet another bug between the interaction
+     of the shell version and the perl version
+
 0.99.1:  Mon Jan 30 15:44:15 EST 2006
    - jettero removed some debugging code
 

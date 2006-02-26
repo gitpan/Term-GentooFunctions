@@ -6,8 +6,8 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "0.99.1";
-our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent);
+our $VERSION = "1.01";
+our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
@@ -15,12 +15,19 @@ use base qw(Exporter);
 BEGIN {
     # use Data::Dumper;
     # die Dumper(\%ENV) unless defined $ENV{RC_INDENTATION};
-    $ENV{RC_DEFAULT_INDENT} = 2   unless defined $ENV{RC_DEFAULT_INDENT};
-    $ENV{RC_INDENTATION}    = " " unless defined $ENV{RC_INDENTATION};
+    $ENV{RC_DEFAULT_INDENT} = 2  unless defined $ENV{RC_DEFAULT_INDENT};
+    $ENV{RC_INDENTATION}    = "" unless defined $ENV{RC_INDENTATION};
 }
 
 
 1;
+
+sub einfon {
+    my $msg = &wash(shift);
+
+    local $| = 1;
+    print " ", BOLD, GREEN, "*", RESET, $msg;
+}
 
 sub eindent  {
     my $i = shift || $ENV{RC_DEFAULT_INDENT};
@@ -31,7 +38,7 @@ sub eindent  {
 sub eoutdent {
     my $i = shift || $ENV{RC_DEFAULT_INDENT};
 
-    $ENV{RC_INDENTATION} =~ s/(?<= ) $// for 1 .. $i;
+    $ENV{RC_INDENTATION} =~ s/ // for 1 .. $i;
 }
 
 sub wash {
@@ -40,7 +47,7 @@ sub wash {
        $msg =~ s/^\s+//s;
        $msg =~ s/\s+$//s;
 
-    return "$ENV{RC_INDENTATION}$msg";
+    return "$ENV{RC_INDENTATION} $msg";
 }
 
 sub einfo {
@@ -69,7 +76,7 @@ sub eend {
     my $res = (@_>0 ? shift : $_);
     my ($columns, $rows) = Term::Size::chars *STDOUT{IO};
 
-    print up(1), right($columns - 7), BOLD, BLUE, "[ ", 
+    print up(1), right($columns - 6), BOLD, BLUE, "[ ", 
         ($res ?  GREEN."ok" : RED."!!"), 
         BLUE, " ]", RESET, "\n";
 
