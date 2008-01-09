@@ -6,8 +6,8 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "1.01";
-our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon);
+our $VERSION = "1.01.3";
+our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon edie);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
@@ -21,6 +21,12 @@ BEGIN {
 
 
 1;
+
+sub edie {
+    &eerror($_) for @_;
+    &eend(0);
+    exit 1;
+}
 
 sub einfon {
     my $msg = &wash(shift);
@@ -45,7 +51,7 @@ sub wash {
     my $msg = shift;
        $msg =~ s/[\r\n]//sg;
        $msg =~ s/^\s+//s;
-       $msg =~ s/\s+$//s;
+     # $msg =~ s/\s+$//s;  # NOTE: do not wash this off.  When we call einfon() we expect to keep trailing spaces.!!
 
     return "$ENV{RC_INDENTATION} $msg";
 }
@@ -138,25 +144,15 @@ before you fork to perl.  Also, T::GF won't be able to modify the indent level i
 
 =head1 AUTHOR
 
-Please contact me with ANY suggestions, no matter how pedantic.
+Paul Miller <paul@cpan.org>
 
-Jettero Heller <japh@voltar-confed.org>
+I am using this software in my own projects...  If you find bugs, please
+please please let me know. :) Actually, let me know if you find it handy at
+all.  Half the fun of releasing this stuff is knowing that people use it.
 
 =head1 COPYRIGHT
 
-GPL!  I included a gpl.txt for your reading enjoyment.
-
-Though, additionally, I will say that I'll be tickled if you were to
-include this package in any commercial endeavor.  Also, any thoughts to
-the effect that using this module will somehow make your commercial
-package GPL should be washed away.
-
-I hereby release you from any such silly conditions.
-
-This package and any modifications you make to it must remain GPL.  Any
-programs you (or your company) write shall remain yours (and under
-whatever copyright you choose) even if you use this package's intended
-and/or exported interfaces in them.
+Copyright (c) 2007 Paul Miller -- LGPL [attached]
 
 =head1 SEE ALSO
 
