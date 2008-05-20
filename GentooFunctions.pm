@@ -9,7 +9,7 @@ use Term::Size;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = "1.01.4";
+our $VERSION = "1.1.7";
 our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon edie);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
@@ -147,7 +147,7 @@ before you fork to perl.  Also, T::GF won't be able to modify the indent level i
 
 =head1 AUTHOR
 
-Paul Miller <paul@cpan.org>
+Paul Miller <jettero@cpan.org>
 
 I am using this software in my own projects...  If you find bugs, please
 please please let me know. :) Actually, let me know if you find it handy at
