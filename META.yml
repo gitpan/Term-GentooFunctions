@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Term-GentooFunctions
-version:             1.002000
+version:             1.2.1
 abstract:            ~
 license:             ~
 author:              ~
@@ -10,6 +10,7 @@ requires:
     Term::ANSIColor:               0
     Term::ANSIScreen:              0
     Term::Size:                    0
+    version:                       0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3
