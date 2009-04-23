@@ -1,9 +1,9 @@
-GentooFunctions.pm
-Makefile.PL
-t/01_load_them.t
-gpl.txt
-META.yml                                 Module meta-data (added by MakeMaker)
-README
 Changes
-lgpl-2.1.txt.gz
+GentooFunctions.pm
+GentooFunctions.pod
+Makefile.PL
 MANIFEST
+README
+t/01_load_them.t
+t/05_execute_things.t
+META.yml                                 Module meta-data (added by MakeMaker)
