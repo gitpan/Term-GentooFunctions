@@ -1,4 +1,10 @@
-1.3020: Sat Apr 25 12:47:53 EDT 2009
+1.3500: Sun Apr 26 09:44:40 EDT 2009
+   - way more better pods
+   - fixed bug in edie()
+   - added edo()
+   - made edie exit(0x65) instead of exit(1)
+
+1.302: Sat Apr 25 12:47:53 EDT 2009
    - very minor doc fixes
    - bumped the version for perl 5.6.1
 

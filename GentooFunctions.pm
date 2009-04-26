@@ -15,9 +15,9 @@ use Exporter;
 use Term::ANSIColor qw(:constants);
 use Term::ANSIScreen qw(:cursor);
 
-our $VERSION = 1.3020;
+our $VERSION = '1.3500';
 
-our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon edie);
+our @EXPORT_OK = qw(einfo eerror ewarn ebegin eend eindent eoutdent einfon edie edo);
 our %EXPORT_TAGS = (all=>[@EXPORT_OK]);
 
 use base qw(Exporter);
@@ -30,34 +30,33 @@ BEGIN {
 }
 
 
-1;
-
-sub edie {
-    &eerror($_) for @_;
-    &eend(0);
-    exit 1;
+sub edie(@) {
+    my $msg = (@_>0 ? shift : $_);
+    eerror($msg);
+    eend(0);
+    exit 0x65;
 }
 
-sub einfon {
-    my $msg = &wash(shift);
+sub einfon($) {
+    my $msg = wash(shift);
 
     local $| = 1;
     print " ", BOLD, GREEN, "*", RESET, $msg;
 }
 
-sub eindent  {
+sub eindent()  {
     my $i = shift || $ENV{RC_DEFAULT_INDENT};
 
     $ENV{RC_INDENTATION} .= " " x $i;
 }
 
-sub eoutdent {
+sub eoutdent() {
     my $i = shift || $ENV{RC_DEFAULT_INDENT};
 
     $ENV{RC_INDENTATION} =~ s/ // for 1 .. $i;
 }
 
-sub wash {
+sub wash($) {
     my $msg = shift;
        $msg =~ s/[\r\n]//sg;
        $msg =~ s/^\s+//s;
@@ -66,30 +65,31 @@ sub wash {
     return "$ENV{RC_INDENTATION} $msg";
 }
 
-sub einfo {
-    my $msg = &wash(shift);
+sub einfo($) {
+    my $msg = wash(shift);
 
     print " ", BOLD, GREEN, "*", RESET, "$msg\n";
 }
 
-sub eerror {
-    my $msg = &wash(shift);
+sub ebegin($) {
+    goto &einfo;
+}
+
+sub eerror($) {
+    my $msg = wash(shift);
 
     print " ", BOLD, RED, "*", RESET, "$msg\n";
 }
 
-sub ewarn {
-    my $msg = &wash(shift);
+sub ewarn($) {
+    my $msg = wash(shift);
 
     print " ", BOLD, YELLOW, "*", RESET, "$msg\n";
 }
 
-sub ebegin {
-    &einfo(@_);
-}
-
-sub eend {
+sub eend(@) {
     my $res = (@_>0 ? shift : $_);
+
     my ($columns, $rows) = eval 'Term::Size::chars *STDOUT{IO}';
        ($columns, $rows) = eval 'Term::Size::Win32::chars *STDOUT{IO}' if $@;
 
@@ -101,3 +101,27 @@ sub eend {
 
     $res;
 }
+
+my $do_depth = 0;
+sub edo($&) {
+    my ($begin_msg, $code) = @_;
+
+    $do_depth ++;
+    eindent if $do_depth>1;
+
+    ebegin $begin_msg;
+    my ($cr, @cr);
+
+    my $r = eval { if( wantarray ) { @cr = $code->() } else { $cr = $code->() } 1 };
+    edie $@ unless $r;
+
+    eoutdent if $do_depth>1;
+    $do_depth --;
+    eend 1;
+
+    return @cr if wantarray;
+    return $cr;
+}
+
+
+"this file is true";
