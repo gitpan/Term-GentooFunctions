@@ -13,4 +13,7 @@ t/10_edo_under_quiet.t
 test_scripts/makefile_rmfile.pl
 test_scripts/spinner.pl
 test_scripts/test_edo_returns.pl
-META.yml                                 Module meta-data (added by MakeMaker)
+test_scripts/test_edo_various_recurse.pl
+test_scripts/really_long.pl
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)
